@@ -1,0 +1,771 @@
+/* Reset default browser styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styling - center everything and set background */
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Main container for the todo list (35% bigger) */
+.container {
+    background: white;
+    border-radius: 13.5px;
+    box-shadow: 0 13.5px 40.5px rgba(0, 0, 0, 0.3);
+    padding: 40.5px;
+    width: 100%;
+    max-width: 675px;
+    font-size: 1.35rem;
+}
+
+/* Top greeting (outside white box, on colored background) */
+.top-greeting {
+    text-align: center;
+    margin-bottom: 27px;
+    width: 100%;
+    max-width: 675px;
+}
+
+/* Top date (outside white box, on colored background) */
+.top-date {
+    text-align: center;
+    margin-bottom: 27px;
+    width: 100%;
+    max-width: 675px;
+}
+
+/* Greeting text */
+.greeting-text {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Date text (when outside container) */
+.top-date .date-text {
+    font-size: 1.5rem;
+    color: white;
+    font-weight: 500;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Navigation section (35% bigger) */
+.navigation-section {
+    display: flex;
+    gap: 20.25px;
+    justify-content: center;
+    margin-bottom: 33.75px;
+    flex-wrap: wrap;
+}
+
+/* Main heading (if needed elsewhere) */
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 2rem;
+}
+
+/* Navigation links (35% bigger) */
+.nav-link {
+    padding: 13.5px 27px;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 6.75px;
+    font-size: 18.9px;
+    transition: background-color 0.3s;
+    display: inline-block;
+}
+
+/* Navigation link hover effect */
+.nav-link:hover {
+    background-color: #2980b9;
+}
+
+/* Current date section (big text) */
+.current-date-section {
+    text-align: center;
+    margin-bottom: 15px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.current-date-big {
+    font-size: 1.8rem;
+    color: #333;
+    font-weight: 600;
+}
+
+/* Current time section */
+.current-time-section {
+    text-align: center;
+    margin-bottom: 25px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+/* Current date and time display */
+.current-date-time {
+    font-size: 1.1rem;
+    color: #555;
+    font-weight: 500;
+}
+
+/* Section containing input and button */
+.input-section {
+    display: flex;
+    gap: 13.5px;
+    margin-bottom: 27px;
+}
+
+/* Add todo section with plus button */
+.add-todo-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 27px;
+}
+
+/* Plus button */
+.plus-button {
+    width: 67.5px;
+    height: 67.5px;
+    border-radius: 50%;
+    background-color: #667eea;
+    color: white;
+    border: none;
+    font-size: 40.5px;
+    font-weight: 300;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.plus-button:hover {
+    background-color: #5568d3;
+    transform: scale(1.05);
+}
+
+.plus-button:active {
+    transform: scale(0.95);
+}
+
+/* Home button at bottom left */
+.home-button-bottom {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    padding: 13.5px 27px;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 18.9px;
+    transition: background-color 0.3s;
+    z-index: 100;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.home-button-bottom:hover {
+    background-color: #2980b9;
+}
+
+/* Time popup overlay */
+.time-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s;
+}
+
+/* Time popup content box */
+.time-popup-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px;
+    animation: slideUp 0.3s;
+}
+
+/* Animation for popup sliding up */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Heading in popup */
+.time-popup-content h3 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.3rem;
+}
+
+/* Task text in popup heading */
+.time-popup-content h3 span {
+    color: #667eea;
+    font-weight: 600;
+}
+
+/* Time selection section */
+.time-section {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+/* Individual time input group */
+.time-input-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+/* Label for time inputs */
+.time-input-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Input field for entering tasks (35% bigger) */
+.task-input {
+    flex: 1;
+    padding: 16.2px;
+    border: 2.7px solid #ddd;
+    border-radius: 6.75px;
+    font-size: 21.6px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+/* Change border color when input is focused */
+.task-input:focus {
+    border-color: #667eea;
+}
+
+/* Time input fields */
+.time-input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+/* Change border color when time input is focused */
+.time-input:focus {
+    border-color: #667eea;
+}
+
+/* Add button styling (35% bigger) */
+.add-button {
+    padding: 16.2px 32.4px;
+    background-color: #667eea;
+    color: white;
+    border: none;
+    border-radius: 6.75px;
+    font-size: 21.6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* Button hover effect */
+.add-button:hover {
+    background-color: #5568d3;
+}
+
+/* Button active/pressed effect */
+.add-button:active {
+    transform: scale(0.98);
+}
+
+/* List container for tasks */
+.task-list {
+    list-style: none;
+}
+
+/* Individual task item (35% bigger) */
+.task-item {
+    background-color: #f8f9fa;
+    padding: 20.25px;
+    margin-bottom: 13.5px;
+    border-radius: 6.75px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20.25px;
+    animation: fadeIn 0.3s;
+}
+
+/* Animation for when tasks appear */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Task content container */
+.task-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Task text */
+.task-text {
+    color: #333;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Task time information (35% bigger) */
+.task-times {
+    display: flex;
+    flex-direction: column;
+    gap: 5.4px;
+    font-size: 17.55px;
+    color: #666;
+}
+
+/* Individual time display */
+.task-time {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Time label (Start/Deadline) */
+.time-label {
+    font-weight: 600;
+    color: #555;
+}
+
+/* Delete button for each task (35% bigger) */
+.delete-button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10.8px 21.6px;
+    border-radius: 6.75px;
+    cursor: pointer;
+    font-size: 18.9px;
+    transition: background-color 0.3s;
+}
+
+/* Delete button hover effect */
+.delete-button:hover {
+    background-color: #c0392b;
+}
+
+/* Delete button active/pressed effect */
+.delete-button:active {
+    transform: scale(0.95);
+}
+
+/* Message when list is empty (35% bigger) */
+.empty-message {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    padding: 27px;
+    font-size: 21.6px;
+}
+
+/* Undo notification container */
+.undo-notification {
+    background-color: #2ecc71;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: slideDown 0.3s;
+}
+
+/* Delete undo notification (different color) */
+.delete-notification {
+    background-color: #e67e22;
+}
+
+/* Animation for undo notification appearing */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Undo button inside notification */
+.undo-button {
+    background-color: white;
+    color: #2ecc71;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+/* Undo button hover effect */
+.undo-button:hover {
+    background-color: #f0f0f0;
+}
+
+/* Undo button active/pressed effect */
+.undo-button:active {
+    transform: scale(0.95);
+}
+
+/* Container for task buttons (Done and Delete) */
+.task-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+/* Done button for each task (35% bigger) */
+.done-button {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    padding: 10.8px 21.6px;
+    border-radius: 6.75px;
+    cursor: pointer;
+    font-size: 18.9px;
+    transition: background-color 0.3s;
+}
+
+/* Done button hover effect */
+.done-button:hover {
+    background-color: #27ae60;
+}
+
+/* Done button active/pressed effect */
+.done-button:active {
+    transform: scale(0.95);
+}
+
+/* Popup buttons container */
+.popup-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/* Confirm button in popup */
+.confirm-button {
+    padding: 12px 24px;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* Confirm button hover effect */
+.confirm-button:hover {
+    background-color: #27ae60;
+}
+
+/* Confirm button active/pressed effect */
+.confirm-button:active {
+    transform: scale(0.98);
+}
+
+/* Cancel button in popup */
+.cancel-button {
+    padding: 12px 24px;
+    background-color: #95a5a6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* Cancel button hover effect */
+.cancel-button:hover {
+    background-color: #7f8c8d;
+}
+
+/* Cancel button active/pressed effect */
+.cancel-button:active {
+    transform: scale(0.98);
+}
+
+/* Info message styling */
+.info-message {
+    background-color: #e8f4f8;
+    color: #2980b9;
+    padding: 12px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Type badge for undo page */
+.type-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+/* Time remaining display */
+.time-remaining {
+    font-size: 12px;
+    color: #e67e22;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+/* Restore button */
+.restore-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.restore-button:hover {
+    background-color: #2980b9;
+}
+
+.restore-button:active {
+    transform: scale(0.95);
+}
+
+/* Overdue task styling */
+.overdue-task {
+    border-left: 4px solid #e74c3c;
+}
+
+/* Overdue badge */
+.overdue-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    background-color: #e74c3c;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+/* Overdue time display */
+.overdue-time {
+    font-size: 12px;
+    color: #e74c3c;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+/* Reschedule button */
+.reschedule-button {
+    background-color: #f39c12;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.reschedule-button:hover {
+    background-color: #e67e22;
+}
+
+.reschedule-button:active {
+    transform: scale(0.95);
+}
+
+/* Welcome page styling (35% bigger) */
+.welcome-container {
+    text-align: center;
+    max-width: 540px;
+    font-size: 1.35rem;
+}
+
+.welcome-section {
+    padding: 40px 20px;
+}
+
+.welcome-section h1 {
+    margin-bottom: 20px;
+    color: #667eea;
+}
+
+.name-input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 18px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.name-input:focus {
+    border-color: #667eea;
+    outline: none;
+}
+
+.welcome-message {
+    font-size: 1.2rem;
+    color: #555;
+    margin: 20px 0 30px 0;
+}
+
+#goToTasksButton {
+    font-size: 18px;
+    padding: 15px 40px;
+}
+
+/* Schedule page styling */
+.schedule-container h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 33.75px;
+    font-size: 2.7rem;
+}
+
+.schedule-content {
+    margin-top: 27px;
+}
+
+.schedule-empty {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    padding: 54px;
+    font-size: 27px;
+}
+
+/* Timetable styling */
+.timetable {
+    display: flex;
+    flex-direction: column;
+    gap: 13.5px;
+}
+
+.time-slot {
+    display: flex;
+    gap: 27px;
+    padding: 20.25px;
+    background-color: #f8f9fa;
+    border-radius: 8.1px;
+    border-left: 5.4px solid #667eea;
+    transition: background-color 0.2s;
+}
+
+.time-slot:hover {
+    background-color: #eef2ff;
+}
+
+.time-column {
+    min-width: 108px;
+    font-weight: 600;
+    color: #667eea;
+    font-size: 20.25px;
+    display: flex;
+    align-items: center;
+}
+
+.task-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6.75px;
+}
+
+.schedule-task-text {
+    font-size: 21.6px;
+    color: #333;
+    font-weight: 500;
+}
+
+.schedule-time-info {
+    display: flex;
+    gap: 20.25px;
+    font-size: 16.2px;
+    color: #666;
+}
+
+.schedule-time-info span {
+    display: inline-block;
+}
+
+/* Back button styling */
+.back-button {
+    background-color: #95a5a6;
+}
+
+.back-button:hover {
+    background-color: #7f8c8d;
+}

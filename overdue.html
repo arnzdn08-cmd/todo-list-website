@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overdue Tasks</title>
+    <!-- Link to our CSS stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Main heading -->
+        <h1>Overdue Tasks</h1>
+        
+        <!-- Back button -->
+        <div class="navigation-section">
+            <a href="index.html" class="nav-link back-button">Back</a>
+        </div>
+        
+        <!-- List container where overdue tasks will be displayed -->
+        <ul id="taskList" class="task-list">
+            <!-- Tasks will be added here dynamically by JavaScript -->
+        </ul>
+    </div>
+
+    <!-- Reschedule popup (hidden by default) -->
+    <div id="reschedulePopup" class="time-popup" style="display: none;">
+        <div class="time-popup-content">
+            <h3>Reschedule Task: <span id="rescheduleTaskText"></span></h3>
+            <div class="time-section">
+                <div class="time-input-group">
+                    <label for="newDeadlineInput">New Deadline:</label>
+                    <input 
+                        type="datetime-local" 
+                        id="newDeadlineInput" 
+                        class="time-input"
+                    >
+                </div>
+            </div>
+            <div class="popup-buttons">
+                <button id="confirmRescheduleButton" class="confirm-button">Reschedule</button>
+                <button id="cancelRescheduleButton" class="cancel-button">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link to our JavaScript file (placed at the bottom so HTML loads first) -->
+    <script src="overdue.js"></script>
+</body>
+</html>
+
