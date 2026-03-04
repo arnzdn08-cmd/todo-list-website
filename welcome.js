@@ -1,77 +1,100 @@
 // ============================================
-// WELCOME PAGE - Name input and welcome message
+// WELCOME PAGE - Firebase Login & Signup
+// Username + Password (email hidden from user)
 // ============================================
 
-const nameInput = document.getElementById('nameInput');
-const saveNameButton = document.getElementById('saveNameButton');
-const nameInputSection = document.getElementById('nameInputSection');
-const welcomeMessageSection = document.getElementById('welcomeMessageSection');
-const goToTasksButton = document.getElementById('goToTasksButton');
-const greetingSection = document.getElementById('greetingSection');
-const greetingText = document.getElementById('greetingText');
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-auth.js";
 
-// ============================================
-// FUNCTION: Get user name from localStorage
-// ============================================
-function getUserName() {
-    return localStorage.getItem('userName') || '';
+const firebaseConfig = {
+  apiKey: "AIzaSyDYbdoeIZpxgya0ktpRrcOqtJBz8Y3oNNI",
+  authDomain: "todoapp-74fd3.firebaseapp.com",
+  projectId: "todoapp-74fd3",
+  storageBucket: "todoapp-74fd3.firebasestorage.app",
+  messagingSenderId: "640734898506",
+  appId: "1:640734898506:web:5b5046336c2339f01e79b3"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const usernameInput = document.getElementById('usernameInput');
+const passwordInput = document.getElementById('passwordInput');
+const loginButton = document.getElementById('loginButton');
+const signupButton = document.getElementById('signupButton');
+const message = document.getElementById('message');
+
+// Convert username to a fake internal email Firebase can use
+function toEmail(username) {
+    return `${username.toLowerCase().trim()}@todoapp-user.com`;
 }
 
-// ============================================
-// FUNCTION: Save user name to localStorage
-// ============================================
-function saveUserName(name) {
-    localStorage.setItem('userName', name.trim());
-}
-
-// ============================================
-// FUNCTION: Show welcome message
-// ============================================
-function showWelcomeMessage() {
-    const name = getUserName();
-    if (name) {
-        // Show greeting outside the container
-        greetingText.textContent = `Hello ${name}!`;
-        greetingSection.style.display = 'block';
-        nameInputSection.style.display = 'none';
-        welcomeMessageSection.style.display = 'block';
-    } else {
-        // Hide greeting when no name
-        greetingSection.style.display = 'none';
-        nameInputSection.style.display = 'block';
-        welcomeMessageSection.style.display = 'none';
-    }
-}
-
-// ============================================
-// FUNCTION: Handle name save
-// ============================================
-function handleSaveName() {
-    const name = nameInput.value.trim();
-    if (name) {
-        saveUserName(name);
-        showWelcomeMessage();
-    }
-}
-
-// ============================================
-// EVENT LISTENERS
-// ============================================
-
-saveNameButton.addEventListener('click', handleSaveName);
-
-nameInput.addEventListener('keypress', function(event) {
-    if (event.key === 'Enter') {
-        handleSaveName();
+// If already logged in, go straight to app
+onAuthStateChanged(auth, user => {
+    if (user) {
+        window.location.href = 'index.html';
     }
 });
 
-goToTasksButton.addEventListener('click', function() {
-    window.location.href = 'index.html';
+// ============================================
+// SIGN UP
+// ============================================
+signupButton.addEventListener('click', async () => {
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value.trim();
+    message.textContent = '';
+
+    if (!username || !password) {
+        message.textContent = 'Please enter a username and password.';
+        return;
+    }
+    if (username.length < 3) {
+        message.textContent = 'Username must be at least 3 characters.';
+        return;
+    }
+    if (password.length < 6) {
+        message.textContent = 'Password must be at least 6 characters.';
+        return;
+    }
+
+    try {
+        await createUserWithEmailAndPassword(auth, toEmail(username), password);
+        window.location.href = 'index.html';
+    } catch (error) {
+        if (error.code === 'auth/email-already-in-use') {
+            message.textContent = 'That username is already taken. Try a different one.';
+        } else {
+            message.textContent = error.message;
+        }
+    }
 });
 
 // ============================================
-// INITIAL SETUP
+// LOGIN
 // ============================================
-showWelcomeMessage();
+loginButton.addEventListener('click', async () => {
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value.trim();
+    message.textContent = '';
 
+    if (!username || !password) {
+        message.textContent = 'Please enter your username and password.';
+        return;
+    }
+
+    try {
+        await signInWithEmailAndPassword(auth, toEmail(username), password);
+        window.location.href = 'index.html';
+    } catch (error) {
+        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+            message.textContent = 'Incorrect username or password.';
+        } else {
+            message.textContent = error.message;
+        }
+    }
+});
+
+// Allow pressing Enter to log in
+passwordInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') loginButton.click();
+});

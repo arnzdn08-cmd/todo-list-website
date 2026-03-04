@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Todo List</title>
-    <!-- Link to our CSS stylesheet -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -34,30 +33,21 @@
                 placeholder="Enter a new task..."
                 class="task-input"
             >
-            <!-- Button to add the task -->
             <button id="addButton" class="add-button">Add Task</button>
         </div>
         
-        <!-- Time selection popup (hidden by default) -->
+        <!-- Time selection popup -->
         <div id="timePopup" class="time-popup" style="display: none;">
             <div class="time-popup-content">
                 <h3>Set Times for: <span id="popupTaskText"></span></h3>
                 <div class="time-section">
                     <div class="time-input-group">
                         <label for="startTimeInput">Start Time:</label>
-                        <input 
-                            type="datetime-local" 
-                            id="startTimeInput" 
-                            class="time-input"
-                        >
+                        <input type="datetime-local" id="startTimeInput" class="time-input">
                     </div>
                     <div class="time-input-group">
                         <label for="deadlineInput">Deadline:</label>
-                        <input 
-                            type="datetime-local" 
-                            id="deadlineInput" 
-                            class="time-input"
-                        >
+                        <input type="datetime-local" id="deadlineInput" class="time-input">
                     </div>
                 </div>
                 <div class="popup-buttons">
@@ -67,28 +57,24 @@
             </div>
         </div>
         
-        <!-- Undo notification that appears temporarily for completed tasks -->
+        <!-- Undo notifications -->
         <div id="undoNotification" class="undo-notification" style="display: none;">
             <span id="undoNotificationText">Task completed!</span>
             <button id="undoButton" class="undo-button">Undo</button>
         </div>
-        
-        <!-- Undo notification that appears temporarily for deleted tasks -->
         <div id="deleteUndoNotification" class="undo-notification delete-notification" style="display: none;">
             <span>Task deleted!</span>
             <button id="deleteUndoButton" class="undo-button">Undo</button>
         </div>
         
-        <!-- List container where tasks will be displayed -->
-        <ul id="taskList" class="task-list">
-            <!-- Tasks will be added here dynamically by JavaScript -->
-        </ul>
+        <!-- Task list -->
+        <ul id="taskList" class="task-list"></ul>
     </div>
 
-    <!-- Home button at bottom left -->
-    <a href="welcome.html" class="home-button-bottom">Home</a>
+    <!-- Home/Logout button -->
+    <button onclick="logOut()" class="home-button-bottom">Logout</button>
 
-    <!-- Link to our JavaScript file (placed at the bottom so HTML loads first) -->
-    <script src="script.js"></script>
+    <!-- Main JS (module so it can import Firebase) -->
+    <script type="module" src="script.js"></script>
 </body>
 </html>

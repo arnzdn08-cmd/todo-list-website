@@ -4,44 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Undo - Deleted/Done Tasks</title>
-    <!-- Link to our CSS stylesheet -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <!-- Main heading -->
         <h1>Undo - Deleted & Done Tasks</h1>
-        
-        <!-- Navigation back to main -->
         <div class="navigation-section">
             <a href="welcome.html" class="nav-link">Home</a>
             <a href="index.html" class="nav-link">Today's Tasks</a>
             <a href="overdue.html" class="nav-link">Overdue Tasks</a>
         </div>
-        
-        <!-- Current date display (big text) -->
         <div class="current-date-section">
             <div id="currentDate" class="current-date-big"></div>
         </div>
-        
-        <!-- Current time display -->
         <div class="current-time-section">
             <div id="currentDateTime" class="current-date-time"></div>
         </div>
-        
-        <!-- Info message -->
         <div class="info-message">
             Tasks are kept here for 10 minutes before being permanently removed.
         </div>
-        
-        <!-- List container where tasks will be displayed -->
-        <ul id="taskList" class="task-list">
-            <!-- Tasks will be added here dynamically by JavaScript -->
-        </ul>
+        <ul id="taskList" class="task-list"></ul>
     </div>
 
-    <!-- Link to our JavaScript file (placed at the bottom so HTML loads first) -->
-    <script src="undo.js"></script>
+    <script type="module" src="undo.js"></script>
 </body>
 </html>
-

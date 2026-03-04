@@ -3,35 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome - Todo List</title>
+    <title>Login / Sign Up - Todo List</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Greeting outside the white box, on the colored background -->
-    <div id="greetingSection" class="top-greeting" style="display: none;">
-        <h1 id="greetingText" class="greeting-text">Hello!</h1>
-    </div>
-    
     <div class="container welcome-container">
-        <div id="nameInputSection" class="welcome-section">
-            <h1>Welcome!</h1>
-            <p>Please enter your name to get started:</p>
-            <input 
-                type="text" 
-                id="nameInput" 
-                placeholder="Enter your name..."
-                class="name-input"
-            >
-            <button id="saveNameButton" class="add-button">Continue</button>
-        </div>
-        
-        <div id="welcomeMessageSection" class="welcome-section" style="display: none;">
-            <p class="welcome-message">Get ready to plan your day</p>
-            <button id="goToTasksButton" class="add-button">Go to Today's Tasks</button>
+        <div class="welcome-section">
+            <h1>📝 Todo App</h1>
+            <p class="welcome-message">Sign in or create an account to get started.</p>
+
+            <input type="text" id="usernameInput" placeholder="Username" class="name-input" autocomplete="off">
+            <input type="password" id="passwordInput" placeholder="Password" class="name-input">
+
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 10px;">
+                <button id="loginButton" class="add-button">Login</button>
+                <button id="signupButton" class="add-button">Sign Up</button>
+            </div>
+
+            <p id="message" style="color: red; margin-top: 20px; min-height: 24px; text-align:center;"></p>
         </div>
     </div>
 
-    <script src="welcome.js"></script>
+    <script type="module" src="welcome.js"></script>
 </body>
 </html>
-
