@@ -1,12 +1,20 @@
 // ============================================
-// SIMPLE TODO LIST - With Firebase/Firestore sync
+// MAIN TODO PAGE - Firebase compat SDK
 // ============================================
 
-import { auth, db } from './firebase.js';
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.6.1/firebase-auth.js";
-import {
-    collection, doc, getDocs, addDoc, deleteDoc, updateDoc, setDoc, onSnapshot, query, orderBy
-} from "https://www.gstatic.com/firebasejs/10.6.1/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyDYbdoeIZpxgya0ktpRrcOqtJBz8Y3oNNI",
+  authDomain: "todoapp-74fd3.firebaseapp.com",
+  projectId: "todoapp-74fd3",
+  storageBucket: "todoapp-74fd3.firebasestorage.app",
+  messagingSenderId: "640734898506",
+  appId: "1:640734898506:web:5b5046336c2339f01e79b3"
+};
+
+// Only initialize if not already initialized
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
 
 // ---- Element refs ----
 const taskInput = document.getElementById('taskInput');
@@ -26,80 +34,45 @@ const currentDate = document.getElementById('currentDate');
 const showAddButton = document.getElementById('showAddButton');
 const inputSection = document.getElementById('inputSection');
 
-// ---- State ----
-let tasks = [];           // local cache of tasks from Firestore
+let tasks = [];
 let currentUser = null;
 let completedTask = null;
 let undoTimeout = null;
 let deletedTask = null;
 let deleteUndoTimeout = null;
 let pendingTaskText = '';
-let unsubscribeTasks = null; // Firestore listener cleanup
+let unsubscribeTasks = null;
 
-// ============================================
-// FIRESTORE HELPERS
-// ============================================
-
-function tasksRef() {
-    return collection(db, 'users', currentUser.uid, 'tasks');
-}
-
-function undoRef() {
-    return collection(db, 'users', currentUser.uid, 'undoList');
-}
-
-// Load tasks from Firestore and listen for real-time changes
-function listenToTasks() {
-    if (unsubscribeTasks) unsubscribeTasks();
-    unsubscribeTasks = onSnapshot(tasksRef(), (snapshot) => {
-        tasks = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-        displayTasks();
-    });
-}
-
-async function addTaskToFirestore(task) {
-    const docRef = await addDoc(tasksRef(), task);
-    return docRef.id;
-}
-
-async function removeTaskFromFirestore(taskId) {
-    await deleteDoc(doc(db, 'users', currentUser.uid, 'tasks', taskId));
-}
-
-async function saveUndoItemToFirestore(task, type) {
-    await addDoc(undoRef(), {
-        task,
-        type,
-        timestamp: Date.now()
-    });
-}
-
-// ============================================
-// AUTH GUARD - wait for login before doing anything
-// ============================================
-onAuthStateChanged(auth, (user) => {
-    if (!user) {
-        window.location.href = 'welcome.html';
-        return;
-    }
+// ---- Auth guard ----
+auth.onAuthStateChanged(user => {
+    if (!user) { window.location.href = 'welcome.html'; return; }
     currentUser = user;
     listenToTasks();
     updateHeader();
 });
 
-// ============================================
-// LOGOUT (used by Home button — optional)
-// ============================================
-window.logOut = async function() {
+function logOut() {
     if (unsubscribeTasks) unsubscribeTasks();
-    await signOut(auth);
-    window.location.href = 'welcome.html';
-};
+    auth.signOut().then(() => { window.location.href = 'welcome.html'; });
+}
 
-// ============================================
-// HELPERS
-// ============================================
+// ---- Firestore helpers ----
+function tasksRef() {
+    return db.collection('users').doc(currentUser.uid).collection('tasks');
+}
+function undoRef() {
+    return db.collection('users').doc(currentUser.uid).collection('undoList');
+}
 
+function listenToTasks() {
+    if (unsubscribeTasks) unsubscribeTasks();
+    unsubscribeTasks = tasksRef().onSnapshot(snapshot => {
+        tasks = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        displayTasks();
+    });
+}
+
+// ---- Helpers ----
 function formatDateTime(dateTimeString) {
     if (!dateTimeString) return '';
     const date = new Date(dateTimeString);
@@ -111,16 +84,12 @@ function formatDateTime(dateTimeString) {
     const timeStr = date.toLocaleString('en-US', timeOptions);
     if (diffDays === 0) return `Today, ${timeStr}`;
     if (diffDays === 1) return `Tomorrow, ${timeStr}`;
-    const dateOptions = diffDays === 2
-        ? { month: 'short', day: 'numeric' }
-        : { month: 'short', day: 'numeric', year: 'numeric' };
+    const dateOptions = diffDays === 2 ? { month: 'short', day: 'numeric' } : { month: 'short', day: 'numeric', year: 'numeric' };
     return `${date.toLocaleDateString('en-US', dateOptions)}, ${timeStr}`;
 }
 
 function formatCurrentDate() {
-    return new Date().toLocaleDateString('en-US', {
-        weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
-    });
+    return new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
 }
 
 function updateHeader() {
@@ -133,10 +102,7 @@ function getCurrentDateTimeForInput() {
     return `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
 }
 
-// ============================================
-// TIME POPUP
-// ============================================
-
+// ---- Time popup ----
 function showTimePopup() {
     const taskText = taskInput.value.trim();
     if (!taskText) return;
@@ -157,38 +123,25 @@ function hideTimePopup() {
 
 async function confirmAddTask() {
     if (!pendingTaskText) return;
-    const newTask = {
-        text: pendingTaskText,
-        startTime: startTimeInput.value,
-        deadline: deadlineInput.value,
-        createdAt: Date.now()
-    };
+    const newTask = { text: pendingTaskText, startTime: startTimeInput.value, deadline: deadlineInput.value, createdAt: Date.now() };
     taskInput.value = '';
     hideTimePopup();
     inputSection.style.display = 'none';
     showAddButton.style.display = 'block';
-    await addTaskToFirestore(newTask);
+    await tasksRef().add(newTask);
 }
 
 async function skipAndAddTask() {
     if (!pendingTaskText) return;
-    const newTask = {
-        text: pendingTaskText,
-        startTime: '',
-        deadline: '',
-        createdAt: Date.now()
-    };
+    const newTask = { text: pendingTaskText, startTime: '', deadline: '', createdAt: Date.now() };
     taskInput.value = '';
     hideTimePopup();
     inputSection.style.display = 'none';
     showAddButton.style.display = 'block';
-    await addTaskToFirestore(newTask);
+    await tasksRef().add(newTask);
 }
 
-// ============================================
-// DISPLAY TASKS
-// ============================================
-
+// ---- Display ----
 function displayTasks() {
     taskList.innerHTML = '';
     if (tasks.length === 0) {
@@ -218,27 +171,15 @@ function displayTasks() {
         const taskText = document.createElement('span');
         taskText.className = 'task-text';
         taskText.textContent = task.text;
-
-        const taskTimes = document.createElement('div');
-        taskTimes.className = 'task-times';
+        taskContent.appendChild(taskText);
 
         if (task.startTime || task.deadline) {
-            if (task.startTime) {
-                const div = document.createElement('div');
-                div.className = 'task-time';
-                div.innerHTML = `<span class="time-label">Start:</span><span>${formatDateTime(task.startTime)}</span>`;
-                taskTimes.appendChild(div);
-            }
-            if (task.deadline) {
-                const div = document.createElement('div');
-                div.className = 'task-time';
-                div.innerHTML = `<span class="time-label">Deadline:</span><span>${formatDateTime(task.deadline)}</span>`;
-                taskTimes.appendChild(div);
-            }
+            const taskTimes = document.createElement('div');
+            taskTimes.className = 'task-times';
+            if (task.startTime) taskTimes.innerHTML += `<div class="task-time"><span class="time-label">Start:</span><span>${formatDateTime(task.startTime)}</span></div>`;
+            if (task.deadline) taskTimes.innerHTML += `<div class="task-time"><span class="time-label">Deadline:</span><span>${formatDateTime(task.deadline)}</span></div>`;
+            taskContent.appendChild(taskTimes);
         }
-
-        taskContent.appendChild(taskText);
-        if (task.startTime || task.deadline) taskContent.appendChild(taskTimes);
 
         const buttonContainer = document.createElement('div');
         buttonContainer.className = 'task-buttons';
@@ -255,49 +196,39 @@ function displayTasks() {
 
         buttonContainer.appendChild(doneButton);
         buttonContainer.appendChild(deleteButton);
-
         listItem.appendChild(taskContent);
         listItem.appendChild(buttonContainer);
         taskList.appendChild(listItem);
     }
 }
 
-// ============================================
-// COMPLETE / DELETE TASKS
-// ============================================
-
+// ---- Complete / Delete ----
 async function completeTask(task) {
     completedTask = task;
-    await removeTaskFromFirestore(task.id);
+    await tasksRef().doc(task.id).delete();
     showUndoNotification();
     if (undoTimeout) clearTimeout(undoTimeout);
     undoTimeout = setTimeout(async () => {
         hideUndoNotification();
-        if (completedTask) {
-            await saveUndoItemToFirestore(completedTask, 'done');
-            completedTask = null;
-        }
+        if (completedTask) { await undoRef().add({ task: completedTask, type: 'done', timestamp: Date.now() }); completedTask = null; }
     }, 3000);
 }
 
 async function deleteTask(task) {
     deletedTask = task;
-    await removeTaskFromFirestore(task.id);
+    await tasksRef().doc(task.id).delete();
     showDeleteUndoNotification();
     if (deleteUndoTimeout) clearTimeout(deleteUndoTimeout);
     deleteUndoTimeout = setTimeout(async () => {
         hideDeleteUndoNotification();
-        if (deletedTask) {
-            await saveUndoItemToFirestore(deletedTask, 'deleted');
-            deletedTask = null;
-        }
+        if (deletedTask) { await undoRef().add({ task: deletedTask, type: 'deleted', timestamp: Date.now() }); deletedTask = null; }
     }, 3000);
 }
 
 async function undoCompleteTask() {
     if (!completedTask) return;
     const { id, ...taskData } = completedTask;
-    await addTaskToFirestore(taskData);
+    await tasksRef().add(taskData);
     completedTask = null;
     if (undoTimeout) { clearTimeout(undoTimeout); undoTimeout = null; }
     hideUndoNotification();
@@ -306,7 +237,7 @@ async function undoCompleteTask() {
 async function undoDeleteTask() {
     if (!deletedTask) return;
     const { id, ...taskData } = deletedTask;
-    await addTaskToFirestore(taskData);
+    await tasksRef().add(taskData);
     deletedTask = null;
     if (deleteUndoTimeout) { clearTimeout(deleteUndoTimeout); deleteUndoTimeout = null; }
     hideDeleteUndoNotification();
@@ -317,30 +248,13 @@ function hideUndoNotification() { undoNotification.style.display = 'none'; }
 function showDeleteUndoNotification() { hideUndoNotification(); deleteUndoNotification.style.display = 'flex'; }
 function hideDeleteUndoNotification() { deleteUndoNotification.style.display = 'none'; }
 
-// ============================================
-// EVENT LISTENERS
-// ============================================
-
-showAddButton.addEventListener('click', () => {
-    inputSection.style.display = 'flex';
-    showAddButton.style.display = 'none';
-    taskInput.focus();
-});
-
+// ---- Events ----
+showAddButton.addEventListener('click', () => { inputSection.style.display = 'flex'; showAddButton.style.display = 'none'; taskInput.focus(); });
 addButton.addEventListener('click', showTimePopup);
-
-taskInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') showTimePopup();
-});
-
+taskInput.addEventListener('keypress', e => { if (e.key === 'Enter') showTimePopup(); });
 confirmButton.addEventListener('click', confirmAddTask);
 cancelButton.addEventListener('click', skipAndAddTask);
-
-timePopup.addEventListener('click', (e) => {
-    if (e.target === timePopup) hideTimePopup();
-});
-
+timePopup.addEventListener('click', e => { if (e.target === timePopup) hideTimePopup(); });
 undoButton.addEventListener('click', undoCompleteTask);
 deleteUndoButton.addEventListener('click', undoDeleteTask);
-
 setInterval(updateHeader, 60000);

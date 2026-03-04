@@ -7,36 +7,26 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Date outside the white box, on the colored background -->
     <div class="top-date">
         <div id="currentDate" class="date-text"></div>
     </div>
     
     <div class="container">
-        <!-- Navigation links -->
         <div class="navigation-section">
             <a href="schedule.html" class="nav-link">Schedule</a>
             <a href="undo.html" class="nav-link">Undo</a>
             <a href="overdue.html" class="nav-link">Overdue</a>
         </div>
         
-        <!-- Add button (plus icon) -->
         <div class="add-todo-section">
             <button id="showAddButton" class="plus-button">+</button>
         </div>
         
-        <!-- Form to add new tasks (hidden by default) -->
         <div id="inputSection" class="input-section" style="display: none;">
-            <input 
-                type="text" 
-                id="taskInput" 
-                placeholder="Enter a new task..."
-                class="task-input"
-            >
+            <input type="text" id="taskInput" placeholder="Enter a new task..." class="task-input">
             <button id="addButton" class="add-button">Add Task</button>
         </div>
         
-        <!-- Time selection popup -->
         <div id="timePopup" class="time-popup" style="display: none;">
             <div class="time-popup-content">
                 <h3>Set Times for: <span id="popupTaskText"></span></h3>
@@ -57,9 +47,8 @@
             </div>
         </div>
         
-        <!-- Undo notifications -->
         <div id="undoNotification" class="undo-notification" style="display: none;">
-            <span id="undoNotificationText">Task completed!</span>
+            <span>Task completed!</span>
             <button id="undoButton" class="undo-button">Undo</button>
         </div>
         <div id="deleteUndoNotification" class="undo-notification delete-notification" style="display: none;">
@@ -67,14 +56,14 @@
             <button id="deleteUndoButton" class="undo-button">Undo</button>
         </div>
         
-        <!-- Task list -->
         <ul id="taskList" class="task-list"></ul>
     </div>
 
-    <!-- Home/Logout button -->
     <button onclick="logOut()" class="home-button-bottom">Logout</button>
 
-    <!-- Main JS (module so it can import Firebase) -->
-    <script type="module" src="script.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
